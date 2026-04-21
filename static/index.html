@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VisionaryX — AI Car Price Calculator</title>
+    <meta name="description" content="VisionaryX uses advanced AI to predict Indian used car resale prices with precision. Interactive particle physics, premium dark/light UI, and real-time analytics.">
+    <meta name="theme-color" content="#060610">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏎️</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- ═══ Background Canvases ═══ -->
+    <canvas id="dotCanvas" aria-hidden="true"></canvas>
+    <canvas id="particleCanvas" aria-hidden="true"></canvas>
+
+    <!-- ═══ Main Application ═══ -->
+    <div class="app-wrapper" id="appWrapper">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">🏎️</span>
+                <h1 class="logo-text">VisionaryX</h1>
+                <span class="logo-badge">AI</span>
+            </div>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light mode" type="button">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+            </button>
+        </header>
+
+        <p class="app-subtitle">AI-Powered Indian Used Car Price Intelligence</p>
+
+        <!-- ─── Calculator Form ─── -->
+        <form id="calculatorForm" class="calculator-form" autocomplete="off">
+            <div class="form-grid">
+                <!-- Vehicle Details -->
+                <div class="form-card" data-card="vehicle">
+                    <div class="card-header">
+                        <span class="card-icon">🏷️</span>
+                        <h2>Vehicle Details</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="brand">Brand</label>
+                            <select id="brand" name="brand">
+                                <option value="Maruti Suzuki">Maruti Suzuki</option>
+                                <option value="Hyundai">Hyundai</option>
+                                <option value="Tata">Tata</option>
+                                <option value="Mahindra">Mahindra</option>
+                                <option value="Kia">Kia</option>
+                                <option value="Toyota">Toyota</option>
+                                <option value="Honda">Honda</option>
+                                <option value="Volkswagen">Volkswagen</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="carModel">Model</label>
+                            <select id="carModel" name="model"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="variant">Variant</label>
+                            <select id="variant" name="variant"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fuel">Fuel Type</label>
+                            <select id="fuel" name="fuel">
+                                <option value="Petrol">⛽ Petrol</option>
+                                <option value="Diesel">🛢️ Diesel</option>
+                                <option value="CNG">💚 CNG</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transmission">Transmission</label>
+                            <select id="transmission" name="transmission">
+                                <option value="Manual">🔧 Manual</option>
+                                <option value="Automatic">🤖 Automatic</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usage History -->
+                <div class="form-card" data-card="usage">
+                    <div class="card-header">
+                        <span class="card-icon">📊</span>
+                        <h2>Usage History</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="condition">Condition</label>
+                            <select id="condition" name="condition">
+                                <option value="Excellent">✨ Excellent</option>
+                                <option value="Good" selected>✅ Good</option>
+                                <option value="Fair">⚠️ Fair</option>
+                                <option value="Poor">❌ Poor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="owner">Ownership</label>
+                            <select id="owner" name="owner">
+                                <option value="First Owner">1st Owner</option>
+                                <option value="Second Owner">2nd Owner</option>
+                                <option value="Third Owner">3rd Owner</option>
+                                <option value="Fourth &amp; Above Owner">4th+ Owner</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="year">Year of Purchase</label>
+                            <div class="slider-group">
+                                <input type="range" id="year" name="year" min="2010" max="2026" value="2020" class="styled-slider">
+                                <span class="slider-readout" id="yearReadout">2020</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="km_driven">Kilometers Driven</label>
+                            <div class="stepper">
+                                <button type="button" class="stepper-btn" data-target="km_driven" data-step="-5000" aria-label="Decrease KM">−</button>
+                                <input type="number" id="km_driven" name="km_driven" value="40000" min="0" max="500000" step="any">
+                                <button type="button" class="stepper-btn" data-target="km_driven" data-step="5000" aria-label="Increase KM">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City Registration</label>
+                            <select id="city" name="city">
+                                <option value="Metro (High Demand)">🏙️ Metro (High Demand)</option>
+                                <option value="Tier 2 (Medium)">🌆 Tier 2 (Medium)</option>
+                                <option value="Rural (Low)">🌾 Rural (Low)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specifications -->
+                <div class="form-card" data-card="specs">
+                    <div class="card-header">
+                        <span class="card-icon">⚙️</span>
+                        <h2>Specifications</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="engine">Engine (cc)</label>
+                            <div class="stepper">
+                                <button type="button" class="stepper-btn" data-target="engine" data-step="-100" aria-label="Decrease engine">−</button>
+                                <input type="number" id="engine" name="engine" value="1197" min="600" max="3000" step="any">
+                                <button type="button" class="stepper-btn" data-target="engine" data-step="100" aria-label="Increase engine">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="max_power">Power (bhp)</label>
+                            <div class="stepper">
+                                <button type="button" class="stepper-btn" data-target="max_power" data-step="-10" aria-label="Decrease power">−</button>
+                                <input type="number" id="max_power" name="max_power" value="82" min="30" max="300" step="any">
+                                <button type="button" class="stepper-btn" data-target="max_power" data-step="10" aria-label="Increase power">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mileage">Mileage (kmpl)</label>
+                            <div class="stepper">
+                                <button type="button" class="stepper-btn" data-target="mileage" data-step="-1" aria-label="Decrease mileage">−</button>
+                                <input type="number" id="mileage" name="mileage" value="20" min="5" max="35" step="any">
+                                <button type="button" class="stepper-btn" data-target="mileage" data-step="1" aria-label="Increase mileage">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="seats">Seats</label>
+                            <select id="seats" name="seats">
+                                <option value="4">4 Seats</option>
+                                <option value="5" selected>5 Seats</option>
+                                <option value="7">7 Seats</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="airbags">Airbags</label>
+                            <div class="stepper">
+                                <button type="button" class="stepper-btn" data-target="airbags" data-step="-1" aria-label="Decrease airbags">−</button>
+                                <input type="number" id="airbags" name="airbags" value="2" min="0" max="8" step="any">
+                                <button type="button" class="stepper-btn" data-target="airbags" data-step="1" aria-label="Increase airbags">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Original Price Row -->
+            <div class="price-row">
+                <label for="original_price">💵 Original Showroom Price (₹)</label>
+                <div class="stepper stepper-large">
+                    <button type="button" class="stepper-btn" data-target="original_price" data-step="-25000" aria-label="Decrease price">−</button>
+                    <input type="number" id="original_price" name="original_price" value="750000" min="100000" step="any">
+                    <button type="button" class="stepper-btn" data-target="original_price" data-step="25000" aria-label="Increase price">+</button>
+                </div>
+            </div>
+
+            <!-- Predict Button -->
+            <button type="submit" class="predict-btn" id="predictBtn">
+                <span class="predict-btn-text" id="btnText">Predict Resale Price</span>
+                <span class="predict-btn-icon">🚀</span>
+                <div class="loading-dots" id="loadingDots">
+                    <span></span><span></span><span></span>
+                </div>
+            </button>
+        </form>
+
+        <!-- ─── Results Section ─── -->
+        <section class="results-section" id="resultsSection" style="display:none;">
+            <div class="result-card" id="resultCard">
+                <!-- Header -->
+                <div class="result-header">
+                    <h2>📋 Prediction Results</h2>
+                    <span class="confidence-badge" id="confidenceBadge">High</span>
+                </div>
+
+                <div class="result-body">
+                    <!-- Main Price -->
+                    <div class="result-price-block">
+                        <span class="result-label">Predicted Resale Price</span>
+                        <div class="result-price" id="predictedPrice">₹ 0</div>
+                        <div class="result-range" id="priceRange">Market Range: ₹ 0 — ₹ 0</div>
+                    </div>
+
+                    <!-- Detail Grid -->
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <span class="detail-key">Original Price</span>
+                            <span class="detail-val" id="rOrigPrice">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-key">Vehicle Age</span>
+                            <span class="detail-val" id="rAge">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-key">Market Adj.</span>
+                            <span class="detail-val" id="rAdj">Standard</span>
+                        </div>
+                    </div>
+
+                    <!-- Depreciation Bar -->
+                    <div class="depreciation-wrap">
+                        <div class="depreciation-header">
+                            <span>Depreciation</span>
+                            <span id="depPct">0%</span>
+                        </div>
+                        <div class="depreciation-track">
+                            <div class="depreciation-fill" id="depFill" style="width:0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Market Score + Tags Row -->
+                    <div class="score-tags-row">
+                        <div class="score-block">
+                            <div class="score-ring" id="scoreRing">
+                                <svg viewBox="0 0 120 120">
+                                    <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                                    <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="50"
+                                            stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                                </svg>
+                                <span class="score-num" id="scoreNum">0</span>
+                            </div>
+                            <span class="score-label">Market Score</span>
+                        </div>
+                        <div class="tags-block" id="smartTags"></div>
+                    </div>
+
+                    <!-- Safety Cap -->
+                    <div class="safety-msg" id="safetyMsg" style="display:none;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── Particle Controls ─── -->
+        <div class="particle-controls" id="particleControls">
+            <button type="button" class="controls-toggle" id="controlsToggle">
+                <span>🎆 Particle Physics</span>
+                <span class="toggle-arrow" id="toggleArrow">▲</span>
+            </button>
+            <div class="controls-panel" id="controlsPanel">
+                <div class="slider-row">
+                    <div class="ctrl-slider">
+                        <label>Gravity</label>
+                        <input type="range" id="gravitySlider" min="-1" max="1" step="0.01" value="0.05">
+                    </div>
+                    <div class="ctrl-slider">
+                        <label>Drag</label>
+                        <input type="range" id="dragSlider" min="0.9" max="1" step="0.001" value="0.98">
+                    </div>
+                    <div class="ctrl-slider">
+                        <label>Spawn</label>
+                        <input type="range" id="spawnSlider" min="1" max="30" step="1" value="8">
+                    </div>
+                </div>
+                <div class="ctrl-buttons">
+                    <button type="button" class="ctrl-btn scatter" id="scatterBtn">SCATTER</button>
+                    <button type="button" class="ctrl-btn implode" id="implodeBtn">IMPLODE</button>
+                    <button type="button" class="ctrl-btn reset" id="resetBtn">RESET</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Built with 🧠 AI &amp; ❤️ by <strong>VisionaryX</strong> &mdash; Indian Market Intelligence</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
